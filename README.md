@@ -1,6 +1,6 @@
 # Word Analyser Service
 
- [![Build Status](https://travis-ci.org/olliefreeman/word-analyser.svg?branch=master)](https://travis-ci.org/olliefreeman/word-analyser)
+ [![Current Build Status](https://travis-ci.org/olliefreeman/word-analyser.svg?branch=master)](https://travis-ci.org/olliefreeman/word-analyser)
  
  This project is designed to be built and tested using [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
  This is easily done using the gradle wrapper which is included in the repository. 
@@ -46,7 +46,7 @@ The URL to the HTML file will be supplied to the terminal in the event of any te
 
 ## Running
 
-```bash
+```
 usage: word-analyser -f <FILE>
 Analyse word contents of file.
 Read the provided file in and analyse contents at a word level
