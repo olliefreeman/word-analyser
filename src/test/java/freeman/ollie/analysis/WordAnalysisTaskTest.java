@@ -26,6 +26,10 @@ public class WordAnalysisTaskTest {
         assertEquals("11.0%", WordAnalysisTask.cleanWord("11.0%"));
         assertEquals("18/05/2016", WordAnalysisTask.cleanWord("18/05/2016"));
         assertEquals("&", WordAnalysisTask.cleanWord("&"));
+        assertEquals("", WordAnalysisTask.cleanWord("{"));
+        assertEquals("", WordAnalysisTask.cleanWord("}"));
+        assertEquals("", WordAnalysisTask.cleanWord("+="));
+        assertEquals("", WordAnalysisTask.cleanWord("="));
     }
 
     @Test

@@ -14,7 +14,7 @@ public class WordAnalysisTask extends RecursiveTask<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(WordAnalysisTask.class);
 
-    private static final Pattern CLEANING_PATTERN = Pattern.compile("^\\p{Punct}*(.+?%?)\\p{Punct}*$");
+    private static final Pattern CLEANING_PATTERN = Pattern.compile("^\\p{Punct}*([^\\p{Punct}].+?%?)\\p{Punct}*$");
 
     private String word;
 
@@ -24,15 +24,14 @@ public class WordAnalysisTask extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        logger.trace("Processing word [{}]", word);
         String cleanedWord = cleanWord(word);
-        logger.trace("Cleaned word [{}]", cleanedWord);
+        logger.trace("Processing word [{}] >> Cleaned word [{}]", word, cleanedWord);
         return cleanedWord.length();
     }
 
     public static String cleanWord(String word) {
         if (word.equals("&")) return word;
         Matcher matcher = CLEANING_PATTERN.matcher(word);
-        return matcher.matches() ? matcher.group(1) : word;
+        return matcher.matches() ? matcher.group(1) : "";
     }
 }

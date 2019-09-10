@@ -19,7 +19,7 @@ class GroovyFileContentAnalysisTaskTest {
             'src/test/resources/bible.txt')))
         Map<Integer, Long> results = task.compute()
 
-        assertEquals('Number of different length words', 18, results.size())
+        assertEquals('Number of different length words', 17, results.size())
     }
 
     @Test
@@ -27,8 +27,8 @@ class GroovyFileContentAnalysisTaskTest {
         GroovyFileContentAnalysisTask task = new GroovyFileContentAnalysisTask(fileLines: Files.readAllLines(Paths.get('build.gradle')))
         Map<Integer, Long> results = task.compute()
 
-        assertNull('No words of length 0', results[0])
-        assertEquals('Number of different length words', 21, results.size())
+        assertNull('Words of length 0', results[0])
+        assertEquals('Number of different length words', 20, results.size())
     }
 
     @Test

@@ -29,8 +29,8 @@ public class AnalyserServiceTest {
         AnalyserService service = new AnalyserService(Paths.get("src/test/resources/bible.txt"));
         service.analyse();
 
-        assertEquals("Total number of words", 793824, service.getTotalNumberOfWords());
-        assertEquals("Average word length", 4.085, service.getAverageWordLength(), 0.001);
+        assertEquals("Total number of words", 774586, service.getTotalNumberOfWords());
+        assertEquals("Average word length", 4.158, service.getAverageWordLength(), 0.001);
 
         logger.info("\n{}", service.getAnalysisString());
     }
@@ -40,8 +40,8 @@ public class AnalyserServiceTest {
         AnalyserService service = new AnalyserService(Paths.get("build.gradle"));
         service.analyse();
 
-        assertEquals("Total number of words", 89, service.getTotalNumberOfWords());
-        assertEquals("Average word length", 9.213, service.getAverageWordLength(), 0.001);
+        assertEquals("Total number of words", 91, service.getTotalNumberOfWords());
+        assertEquals("Average word length", 8.868, service.getAverageWordLength(), 0.001);
 
         Map.Entry<Long, List<Integer>> mostUsed = service.getMostUsedWordLength();
         assertEquals("Most used word length", 14, mostUsed.getKey().intValue());

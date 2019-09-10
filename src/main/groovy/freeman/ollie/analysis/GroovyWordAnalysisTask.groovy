@@ -13,7 +13,7 @@ class GroovyWordAnalysisTask extends RecursiveTask<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyWordAnalysisTask)
 
-    private static final Pattern CLEANING_PATTERN = ~/^\p{Punct}*(.+?%?)\p{Punct}*$/
+    private static final Pattern CLEANING_PATTERN = ~/^\p{Punct}*([^\p{Punct}].+?%?)\p{Punct}*$/
 
     private String word
 
@@ -21,10 +21,10 @@ class GroovyWordAnalysisTask extends RecursiveTask<Integer> {
     protected Integer compute() {
         String cleanedWord = cleanWord(word)
         logger.trace('Processing word [{}] >> Cleaned word [{}]', word, cleanedWord)
-        cleanedWord.length()
+        cleanedWord?.length()
     }
 
     static String cleanWord(String word) {
-        word == '&' ? word : word.find(CLEANING_PATTERN) {it[1]} ?: word
+        word == '&' ? word : word.find(CLEANING_PATTERN) {it[1]} ?: ''
     }
 }

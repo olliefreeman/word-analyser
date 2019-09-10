@@ -26,6 +26,10 @@ class GroovyWordAnalysisTaskTest {
         assertEquals('11.0%', GroovyWordAnalysisTask.cleanWord('11.0%'))
         assertEquals('18/05/2016', GroovyWordAnalysisTask.cleanWord('18/05/2016'))
         assertEquals('&', GroovyWordAnalysisTask.cleanWord('&'))
+        assertEquals('', GroovyWordAnalysisTask.cleanWord('{'))
+        assertEquals('', GroovyWordAnalysisTask.cleanWord('}'))
+        assertEquals('', GroovyWordAnalysisTask.cleanWord('+='))
+        assertEquals('', GroovyWordAnalysisTask.cleanWord('='))
     }
 
     @Test

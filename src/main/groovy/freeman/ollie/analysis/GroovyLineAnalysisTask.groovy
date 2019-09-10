@@ -22,6 +22,7 @@ class GroovyLineAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
             .findAll()
             .collect {new GroovyWordAnalysisTask(word: it).fork()}
             .groupBy {it.join()}
-            .collectEntries {length, values -> [length, values.size()]} as Map<Integer, Long>
+            .collectEntries {length, values -> [length, values.size()]}
+            .findAll {it.key} as Map<Integer, Long>
     }
 }

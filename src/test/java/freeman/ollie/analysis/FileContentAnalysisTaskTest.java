@@ -19,7 +19,7 @@ public class FileContentAnalysisTaskTest {
         FileContentAnalysisTask task = new FileContentAnalysisTask(Files.readAllLines(Paths.get("src/test/resources/bible.txt")));
         Map<Integer, Long> results = task.compute();
 
-        assertEquals("Number of different length words", 18, results.size());
+        assertEquals("Number of different length words", 17, results.size());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class FileContentAnalysisTaskTest {
         Map<Integer, Long> results = task.compute();
 
         assertNull("No words of length 0", results.get(0));
-        assertEquals("Number of different length words", 21, results.size());
+        assertEquals("Number of different length words", 20, results.size());
     }
 
     @Test
