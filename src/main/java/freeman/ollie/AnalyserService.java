@@ -21,7 +21,7 @@ import java.util.concurrent.ForkJoinPool;
 public class AnalyserService {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyserService.class);
-    DecimalFormat decimalFormat = new DecimalFormat("#.###");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
     private Path filePathToAnalyse;
     private Map<Integer, Long> results;
 
@@ -54,7 +54,7 @@ public class AnalyserService {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Word count = ").append(getTotalNumberOfWords()).append("\n");
-        sb.append("Average word length = ").append(decimalFormat.format(getAverageWordLength())).append("\n");
+        sb.append("Average word length = ").append(DECIMAL_FORMAT.format(getAverageWordLength())).append("\n");
 
         results.forEach((k, v) -> sb.append("Number of words of length ").append(k).append(" is ").append(v).append("\n"));
 
