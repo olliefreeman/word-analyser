@@ -1,5 +1,6 @@
 package freeman.ollie.analysis;
 
+import freeman.ollie.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,32 +41,7 @@ public class FileContentAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
                                );
         });
 
-        logger.info("All lines processed in {}", getTimeTakenString(System.currentTimeMillis() - start));
+        logger.info("All lines processed in {}", Utils.getTimeTakenString(System.currentTimeMillis() - start));
         return results;
-    }
-
-
-    private static String getTimeTakenString(long timeTaken) {
-
-        StringBuilder sb = new StringBuilder();
-
-        long secs = timeTaken / 1000;
-        long ms = timeTaken - (secs * 1000);
-        long mins = secs / 60;
-        secs = secs % 60;
-
-        if (mins > 0) {
-            sb.append(mins).append(" min");
-            if (mins > 1) sb.append("s");
-            sb.append(" ");
-        }
-
-        if (secs > 0) {
-            sb.append(secs).append(" sec");
-            if (secs > 1) sb.append("s");
-            sb.append(" ");
-        }
-
-        return sb.append(ms).append(" ms").toString();
     }
 }

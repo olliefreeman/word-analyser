@@ -14,7 +14,7 @@ public class WordAnalysisTask extends RecursiveTask<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(WordAnalysisTask.class);
 
-    private static final Pattern CLEANING_PATTERN = Pattern.compile("^\\p{Punct}*(.+?%?)\\p{Punct}*");
+    private static final Pattern CLEANING_PATTERN = Pattern.compile("^\\p{Punct}*(.+?%?)\\p{Punct}*$");
 
     private String word;
 

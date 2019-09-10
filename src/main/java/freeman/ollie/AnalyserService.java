@@ -2,6 +2,7 @@ package freeman.ollie;
 
 import freeman.ollie.analysis.FileContentAnalysisTask;
 import freeman.ollie.exception.WordAnalyserException;
+import freeman.ollie.util.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ForkJoinPool;
 /**
  * @since 09/09/2019
  */
-public class AnalyserService {
+public class AnalyserService implements Service {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyserService.class);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
@@ -29,6 +30,7 @@ public class AnalyserService {
         this.filePathToAnalyse = filePathToAnalyse.toAbsolutePath().normalize();
     }
 
+    @Override
     public void analyse() throws WordAnalyserException {
         if (!Files.exists(filePathToAnalyse)) {
             throw new WordAnalyserException("No file found at provided path [" + filePathToAnalyse.toString() + "]");
@@ -49,6 +51,7 @@ public class AnalyserService {
         }
     }
 
+    @Override
     public String getAnalysisString() {
 
         StringBuilder sb = new StringBuilder();
@@ -76,11 +79,13 @@ public class AnalyserService {
         return sb.toString();
     }
 
+    @Override
     public double getAverageWordLength() {
         double total = results.entrySet().stream().mapToDouble(value -> value.getKey() * value.getValue()).sum();
         return total / getTotalNumberOfWords();
     }
 
+    @Override
     public Map.Entry<Long, List<Integer>> getMostUsedWordLength() {
         Map<Long, List<Integer>> pivotedData = new HashMap<>();
 
@@ -94,6 +99,7 @@ public class AnalyserService {
         return pivotedData.entrySet().stream().max(Comparator.comparingLong(Map.Entry::getKey)).get();
     }
 
+    @Override
     public long getTotalNumberOfWords() {
         return results.values().stream().mapToLong(Long::longValue).sum();
     }
