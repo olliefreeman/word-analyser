@@ -28,7 +28,7 @@ public class FileContentAnalysisTaskTest {
         Map<Integer, Long> results = task.compute();
 
         assertNull("No words of length 0", results.get(0));
-        assertEquals("Number of different length words", 20, results.size());
+        assertEquals("Number of different length words", 21, results.size());
     }
 
     @Test
