@@ -1,6 +1,7 @@
 package freeman.ollie;
 
 import freeman.ollie.exception.WordAnalyserException;
+import freeman.ollie.util.Service;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -33,14 +34,11 @@ public class WordAnalyser {
             if (line.hasOption('h')) help();
             else if (line.hasOption('v')) System.out.println(fullVersion());
             else if (line.hasOption('f')) {
-
                 Path path = Paths.get(line.getOptionValue('f'));
 
-                logger.info("Starting Word Analyser service");
-
-                AnalyserService analyserService = new AnalyserService(path);
+                Service analyserService = getService(line, path);
+                logger.info("Starting Word Analyser service using {}", analyserService.getClass().getSimpleName());
                 analyserService.analyse();
-
                 logger.info("Analysis Results:\n{}", analyserService.getAnalysisString());
 
             } else help();
@@ -63,11 +61,37 @@ public class WordAnalyser {
         mainGroup.addOption(Option.builder("h").longOpt("help").build());
         mainGroup.addOption(Option.builder("v").longOpt("version").build());
         options.addOptionGroup(mainGroup);
+        OptionGroup languageGroup = new OptionGroup();
+        languageGroup.addOption(
+            Option.builder("l").longOpt("language")
+                .argName("LANGUAGE")
+                .hasArg().required()
+                .desc("Programming language to use for analysis. One of 'java' or 'groovy', default is 'java'.").build()
+                               );
+        languageGroup.addOption(Option.builder("j").longOpt("java").desc("Shorthand option for --language=java").build());
+        languageGroup.addOption(Option.builder("g").longOpt("groovy").desc("Shorthand option for --language=groovy").build());
+        options.addOptionGroup(languageGroup);
         return options;
     }
 
     private static String fullVersion() {
         return "word-analyser " + version();
+    }
+
+    private static String getLanguage(CommandLine line) {
+        if (line.hasOption('g')) return "groovy";
+        if (line.hasOption('j')) return "java";
+        return line.hasOption('l') ? line.getOptionValue('l') : "java";
+    }
+
+    private static Service getService(CommandLine line, Path path) {
+        switch (getLanguage(line)) {
+            case "groovy":
+                return new GroovyAnalyserService(path);
+            case "java":
+            default:
+                return new AnalyserService(path);
+        }
     }
 
     private static void help() {

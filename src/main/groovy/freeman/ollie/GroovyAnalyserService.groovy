@@ -23,6 +23,10 @@ class GroovyAnalyserService implements Service {
     private Path filePathToAnalyse
     private Map<Integer, Long> results
 
+    GroovyAnalyserService(Path filePathToAnalyse) {
+        this.filePathToAnalyse = filePathToAnalyse
+    }
+
     @Override
     void analyse() throws WordAnalyserException {
         if (!Files.exists(filePathToAnalyse)) {
