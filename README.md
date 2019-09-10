@@ -1,6 +1,5 @@
 # Word Analyser Service
 
-Current Build Status
  [![Build Status](https://travis-ci.org/olliefreeman/word-analyser.svg?branch=master)](https://travis-ci.org/olliefreeman/word-analyser)
  
  This project is designed to be built and tested using [Gradle](https://docs.gradle.org/current/userguide/userguide.html).
@@ -119,6 +118,16 @@ Once the archive is built it can be extracted in your desired location which wil
 > ./word-analyser/bin/word-analyser -f <FILEPATH> -g
 
 ```
+
+## Assumptions
+
+Words are as identified by splitting lines on whitespace and then the following pattern is used to strip any leading or trailing punctuation:
+`^\p{Punct}*([^\p{Punct}].+?%?)\p{Punct}*$`.
+The pattern performs the following
+* Removes all punctuation up to the first non-punctation character
+* Removes all trailing punctuation apart from `%`.
+
+There is also a "catch" in place which returns any solitary `&` characters. 
 
 ## Groovy vs Java
 
