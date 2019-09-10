@@ -24,7 +24,7 @@ class GroovyAnalyserServiceTest {
 
     @Test
     void bibleAnalyseWordCount() throws Exception {
-        GroovyAnalyserService service = new GroovyAnalyserService(filePathToAnalyse: Paths.get('src/test/resources/bible.txt'))
+        GroovyAnalyserService service = new GroovyAnalyserService(Paths.get('src/test/resources/bible.txt'))
         service.analyse()
 
         assertEquals('Total number of words', 774586, service.getTotalNumberOfWords())
@@ -35,7 +35,7 @@ class GroovyAnalyserServiceTest {
 
     @Test
     void buildGradleAnalyseWordCount() throws Exception {
-        GroovyAnalyserService service = new GroovyAnalyserService(filePathToAnalyse: Paths.get('build.gradle'))
+        GroovyAnalyserService service = new GroovyAnalyserService(Paths.get('build.gradle'))
         service.analyse()
 
         assertEquals('Total number of words', 91, service.getTotalNumberOfWords())
@@ -51,7 +51,7 @@ class GroovyAnalyserServiceTest {
     @Test
     void noFileAnalyse() throws Exception {
 
-        GroovyAnalyserService service = new GroovyAnalyserService(filePathToAnalyse: Paths.get('resources/nothing.txt'))
+        GroovyAnalyserService service = new GroovyAnalyserService(Paths.get('resources/nothing.txt'))
         thrown.expect(WordAnalyserException.class)
         thrown.expectMessage(startsWith('No file found at provided path'))
         service.analyse()
@@ -59,7 +59,7 @@ class GroovyAnalyserServiceTest {
 
     @Test
     void simpleAnalyseWordCount() throws Exception {
-        GroovyAnalyserService service = new GroovyAnalyserService(filePathToAnalyse: Paths.get('src/test/resources/simple.txt'))
+        GroovyAnalyserService service = new GroovyAnalyserService(Paths.get('src/test/resources/simple.txt'))
         service.analyse()
 
         assertEquals('Total number of words', 9, service.getTotalNumberOfWords())
