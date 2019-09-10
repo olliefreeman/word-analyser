@@ -17,6 +17,7 @@ public class WordAnalysisTaskTest {
         assertEquals("hello", WordAnalysisTask.cleanWord("hello,"));
         assertEquals("hello", WordAnalysisTask.cleanWord("(hello"));
         assertEquals("hello", WordAnalysisTask.cleanWord("hello)"));
+        assertEquals("hello", WordAnalysisTask.cleanWord("hello)."));
 
         assertEquals("11", WordAnalysisTask.cleanWord("11"));
         assertEquals("£11", WordAnalysisTask.cleanWord("£11"));

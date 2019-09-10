@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.RecursiveTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @since 09/09/2019
@@ -11,6 +13,8 @@ import java.util.concurrent.RecursiveTask;
 public class WordAnalysisTask extends RecursiveTask<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(WordAnalysisTask.class);
+
+    private static final Pattern CLEANING_PATTERN = Pattern.compile("^\\p{Punct}*(.+?%?)\\p{Punct}*");
 
     private String word;
 
@@ -28,13 +32,7 @@ public class WordAnalysisTask extends RecursiveTask<Integer> {
 
     public static String cleanWord(String word) {
         if (word.equals("&")) return word;
-
-        String clean = word.replaceAll("^\\p{Punct}", "");
-
-        if (word.endsWith("%")) return word;
-
-        clean = clean.replaceAll("\\p{Punct}$", "");
-
-        return clean;
+        Matcher matcher = CLEANING_PATTERN.matcher(word);
+        return matcher.matches() ? matcher.group(1) : word;
     }
 }
