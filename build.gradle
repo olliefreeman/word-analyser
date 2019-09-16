@@ -5,6 +5,7 @@ plugins {
     id 'java-library'
     id 'application'
     id 'project-report'
+    id 'maven'
 }
 
 repositories {
@@ -42,5 +43,23 @@ idea {
         downloadJavadoc = true
         downloadSources = true
 
+    }
+}
+
+task createPom {
+    group 'build setup'
+    doLast {
+        pom {
+            project {
+                inceptionYear '2019'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo('pom.xml')
     }
 }
