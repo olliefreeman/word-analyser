@@ -5,12 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @since 09/09/2019
@@ -36,17 +37,6 @@ public class LineAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
                 .map(WordAnalysisTask::new)
                 .collect(Collectors.toList());
         subTasks.forEach(ForkJoinTask::fork);
-
-        Map<Integer, Long> results = new HashMap<>();
-
-        subTasks.forEach(task -> {
-                             Integer length = task.join();
-                             if (length != 0) {
-                                 results.compute(length, (k, v) -> v == null ? 1 : ++v);
-                             }
-                         }
-                        );
-
-        return results;
+        return subTasks.stream().collect(groupingBy(ForkJoinTask::join, Collectors.counting()));
     }
 }
