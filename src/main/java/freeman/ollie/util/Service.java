@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public interface Service {
 
+    Map<Integer, Long> getResults();
+
     void analyse() throws WordAnalyserException;
 
     String getAnalysisString();

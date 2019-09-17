@@ -28,6 +28,11 @@ class GroovyAnalyserService implements Service {
     }
 
     @Override
+    Map<Integer, Long> getResults() {
+        results
+    }
+
+    @Override
     void analyse() throws WordAnalyserException {
         if (!Files.exists(filePathToAnalyse)) {
             throw new WordAnalyserException("No file found at provided path [${filePathToAnalyse.toString()}]")

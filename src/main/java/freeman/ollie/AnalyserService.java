@@ -3,9 +3,11 @@ package freeman.ollie;
 import freeman.ollie.analysis.FileContentAnalysisTask;
 import freeman.ollie.exception.WordAnalyserException;
 import freeman.ollie.util.Service;
+import freeman.ollie.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -21,13 +23,18 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class AnalyserService implements Service {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnalyserService.class);
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
-    private Path filePathToAnalyse;
-    private Map<Integer, Long> results;
+    protected static final Logger logger = LoggerFactory.getLogger(AnalyserService.class);
+    protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
+    protected Path filePathToAnalyse;
+    protected Map<Integer, Long> results;
 
     public AnalyserService(Path filePathToAnalyse) {
         this.filePathToAnalyse = filePathToAnalyse.toAbsolutePath().normalize();
+    }
+
+    @Override
+    public Map<Integer, Long> getResults() {
+        return results;
     }
 
     @Override
@@ -37,15 +44,10 @@ public class AnalyserService implements Service {
         }
 
         try {
+            long start = System.currentTimeMillis();
             logger.info("Reading in file [{}]", filePathToAnalyse.toString());
-            List<String> fileLines = Files.readAllLines(filePathToAnalyse);
-
-            ForkJoinPool pool = ForkJoinPool.commonPool();
-            logger.info("Running with parallelism: {}", pool.getParallelism());
-            FileContentAnalysisTask task = new FileContentAnalysisTask(fileLines);
-            results = pool.invoke(task);
-            logger.info("Analysis complete");
-
+            results = performAnalysis();
+            logger.info("Analysis complete in {}", Utils.getTimeTakenString(System.currentTimeMillis() - start));
         } catch (Exception ioe) {
             throw new WordAnalyserException("Could not analyse file", ioe);
         }
@@ -104,4 +106,11 @@ public class AnalyserService implements Service {
         return results.values().stream().mapToLong(Long::longValue).sum();
     }
 
+    protected Map<Integer, Long> performAnalysis() throws IOException {
+        List<String> fileLines = Files.readAllLines(filePathToAnalyse);
+        ForkJoinPool pool = ForkJoinPool.commonPool();
+        logger.info("Running with parallelism: {}", pool.getParallelism());
+        FileContentAnalysisTask task = new FileContentAnalysisTask(fileLines);
+        return pool.invoke(task);
+    }
 }
