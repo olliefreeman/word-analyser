@@ -177,5 +177,34 @@ public abstract class BaseAnalyserServiceTest {
 
     }
 
+    @Test
+    public void smallBuildGradleAnalyseWordCount() throws Exception {
+        Service service = getService(Paths.get("src/test/resources/small_build.gradle"));
+        service.analyse();
+
+        logger.info("\n{}", service.getAnalysisString());
+
+        assertEquals("Total number of words", 15, service.getTotalNumberOfWords());
+
+        assertNull("Number of words of length 0", service.getResults().get(0));
+        assertNull("Number of words of length 1", service.getResults().get(1));
+        assertEquals("Number of words of length 2", 7L, service.getResults().get(2).longValue());
+        assertNull("Number of words of length 3", service.getResults().get(3));
+        assertEquals("Number of words of length 4", 1L, service.getResults().get(4).longValue());
+        assertEquals("Number of words of length 5", 1L, service.getResults().get(5).longValue());
+        assertEquals("Number of words of length 6", 1L, service.getResults().get(6).longValue());
+        assertEquals("Number of words of length 7", 2L, service.getResults().get(7).longValue());
+        assertEquals("Number of words of length 11", 1L, service.getResults().get(11).longValue());
+        assertEquals("Number of words of length 12", 1L, service.getResults().get(12).longValue());
+        assertEquals("Number of words of length 14", 1L, service.getResults().get(14).longValue());
+
+        assertEquals("Average word length", 5.333, service.getAverageWordLength(), 0.001);
+
+        Map.Entry<Long, List<Integer>> mostUsed = service.getMostUsedWordLength();
+        assertEquals("Most used word length", 7, mostUsed.getKey().intValue());
+        assertEquals("Most used word lengths", 2, mostUsed.getValue().get(0).intValue());
+
+    }
+
     abstract Service getService(Path path);
 }

@@ -1,0 +1,9 @@
+plugins {
+    id 'idea'
+    id 'eclipse'
+    id 'groovy'
+    id 'java-library'
+    id 'application'
+    id 'project-report'
+    id 'maven'
+}

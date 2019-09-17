@@ -48,4 +48,16 @@ public class LineAnalysisTaskTest {
         assertEquals("Number of words of length 7", 1L, results.get(7).longValue());
 
     }
+
+    @Test
+    public void computeSomethingWithAnEmptyCharacter() {
+
+        LineAnalysisTask task = new LineAnalysisTask("application {");
+        Map<Integer, Long> results = task.compute();
+
+        assertEquals("Number of word sizes", 1, results.size());
+
+        assertNull("Number of words of length 0", results.get(0));
+        assertEquals("Number of words of length 11", 1L, results.get(11).longValue());
+    }
 }
