@@ -4,6 +4,8 @@ package freeman.ollie
 import freeman.ollie.analysis.GroovyFileContentAnalysisTask
 import freeman.ollie.exception.WordAnalyserException
 import freeman.ollie.util.Service
+import freeman.ollie.util.Utils
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -15,12 +17,13 @@ import java.util.concurrent.ForkJoinPool
 /**
  * @since 10/09/2019
  */
+@CompileStatic
 class GroovyAnalyserService implements Service {
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyAnalyserService)
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat('#.###')
 
-    private Path filePathToAnalyse
+    protected Path filePathToAnalyse
     private Map<Integer, Long> results
 
     GroovyAnalyserService(Path filePathToAnalyse) {
@@ -32,6 +35,13 @@ class GroovyAnalyserService implements Service {
         results
     }
 
+    protected Map<Integer, Long> performAnalysis() throws IOException {
+        List<String> fileLines = Files.readAllLines(filePathToAnalyse)
+        ForkJoinPool pool = ForkJoinPool.commonPool()
+        logger.info('Running with parallelism: {}', pool.getParallelism())
+        return pool.invoke(new GroovyFileContentAnalysisTask(fileLines: fileLines))
+    }
+
     @Override
     void analyse() throws WordAnalyserException {
         if (!Files.exists(filePathToAnalyse)) {
@@ -40,12 +50,9 @@ class GroovyAnalyserService implements Service {
 
         try {
             logger.info('Reading in file [{}]', filePathToAnalyse.toString())
-            List<String> fileLines = Files.readAllLines(filePathToAnalyse)
-
-            ForkJoinPool pool = ForkJoinPool.commonPool()
-            logger.info('Running with parallelism: {}', pool.getParallelism())
-            results = pool.invoke(new GroovyFileContentAnalysisTask(fileLines: fileLines))
-            logger.info('Analysis complete')
+            long start = System.currentTimeMillis()
+            results = performAnalysis()
+            logger.info('Analysis complete in {}', Utils.getTimeTakenString(System.currentTimeMillis() - start))
         } catch (Exception ioe) {
             throw new WordAnalyserException("Could not analyse file", ioe);
         }
@@ -76,7 +83,7 @@ class GroovyAnalyserService implements Service {
 
     @Override
     double getAverageWordLength() {
-        results.collect {k, v -> k * v}.sum() / totalNumberOfWords
+        (results.collect {k, v -> k * v}.sum() as float) / totalNumberOfWords
     }
 
     @Override
