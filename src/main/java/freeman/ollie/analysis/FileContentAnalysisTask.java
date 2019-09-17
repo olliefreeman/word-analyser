@@ -1,13 +1,11 @@
 package freeman.ollie.analysis;
 
-import freeman.ollie.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
 
@@ -28,9 +26,10 @@ public class FileContentAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
     protected Map<Integer, Long> compute() {
 
         logger.info("Starting line analysis on {} lines", fileLines.size());
-        long start = System.currentTimeMillis();
-        List<LineAnalysisTask> tasks = fileLines.stream().map(LineAnalysisTask::new).collect(Collectors.toList());
-        tasks.forEach(ForkJoinTask::fork);
+        List<LineAnalysisTask> tasks = fileLines
+            .stream()
+            .map(l -> ((LineAnalysisTask) new LineAnalysisTask(l).fork()))
+            .collect(Collectors.toList());
 
         logger.info("All lines submitted for processing, waiting for completion");
         Map<Integer, Long> results = new HashMap<>();
@@ -41,7 +40,7 @@ public class FileContentAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
                                );
         });
 
-        logger.info("All lines processed in {}", Utils.getTimeTakenString(System.currentTimeMillis() - start));
+        logger.info("All lines processed");
         return results;
     }
 }

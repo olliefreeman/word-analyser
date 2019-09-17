@@ -1,12 +1,12 @@
 package freeman.ollie;
 
-import com.google.common.base.Strings;
-import freeman.ollie.analysis.WordAnalysisTask;
+import freeman.ollie.util.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,9 +24,10 @@ public class SingleThreadedAnalyserService extends AnalyserService {
 
     @Override
     protected Map<Integer, Long> performAnalysis() throws IOException {
-        return Arrays.stream(WordAnalysisTask.splitWords(Files.readString(filePathToAnalyse)))
-            .filter(w -> !Strings.isNullOrEmpty(w))
-            .map(w -> WordAnalysisTask.cleanWord(w).length())
+        List<String> splitWords = Arrays.asList(Utils.splitWords(Files.readString(filePathToAnalyse)));
+
+        return splitWords.parallelStream()
+            .map(w -> Utils.cleanWord(w).length())
             .filter(l -> l != 0)
             .collect(groupingBy(Function.identity(), Collectors.counting()));
     }
