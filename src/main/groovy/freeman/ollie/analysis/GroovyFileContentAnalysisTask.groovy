@@ -28,7 +28,7 @@ class GroovyFileContentAnalysisTask extends RecursiveTask<Map<Integer, Long>> {
         tasks.each {task ->
             Map<Integer, Long> taskResults = task.join()
             taskResults.each {length, count ->
-                results[length] = (results[length] ?: 0) + count
+                results[length] = ((results[length] ?: 0) + count) as Long
             }
         }
 
