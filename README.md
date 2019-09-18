@@ -8,7 +8,7 @@
  
 ## Required 
 
-* Java 8+ 
+* Java 11+ 
 
 ## Development
 
