@@ -27,9 +27,15 @@ public class AnalyserService implements Service {
     protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
     protected Path filePathToAnalyse;
     protected Map<Integer, Long> results;
+    private boolean forkWordCleaning;
 
     public AnalyserService(Path filePathToAnalyse) {
+        this(filePathToAnalyse, false);
+    }
+
+    public AnalyserService(Path filePathToAnalyse, boolean forkWordCleaning) {
         this.filePathToAnalyse = filePathToAnalyse.toAbsolutePath().normalize();
+        this.forkWordCleaning = forkWordCleaning;
     }
 
     @Override
@@ -110,7 +116,7 @@ public class AnalyserService implements Service {
         List<String> fileLines = Files.readAllLines(filePathToAnalyse);
         ForkJoinPool pool = ForkJoinPool.commonPool();
         logger.info("Running with parallelism: {}", pool.getParallelism());
-        FileContentAnalysisTask task = new FileContentAnalysisTask(fileLines);
+        FileContentAnalysisTask task = new FileContentAnalysisTask(fileLines, forkWordCleaning);
         return pool.invoke(task);
     }
 }

@@ -11,6 +11,6 @@ public class AnalyserServiceTest extends BaseAnalyserServiceTest {
 
     @Override
     Service getService(Path path) {
-        return new AnalyserService(path);
+        return new AnalyserService(path, false);
     }
 }

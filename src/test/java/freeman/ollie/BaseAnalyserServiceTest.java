@@ -2,6 +2,7 @@ package freeman.ollie;
 
 import freeman.ollie.exception.WordAnalyserException;
 import freeman.ollie.util.Service;
+import freeman.ollie.util.Utils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +25,7 @@ import static org.junit.Assert.assertNull;
  */
 public abstract class BaseAnalyserServiceTest {
 
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
     private static final Logger logger = LoggerFactory.getLogger(BaseAnalyserServiceTest.class);
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -203,6 +207,31 @@ public abstract class BaseAnalyserServiceTest {
         Map.Entry<Long, List<Integer>> mostUsed = service.getMostUsedWordLength();
         assertEquals("Most used word length", 7, mostUsed.getKey().intValue());
         assertEquals("Most used word lengths", 2, mostUsed.getValue().get(0).intValue());
+
+    }
+
+    /*
+     * Benchmark for SingleThreadedAnalyserServiceTest is [551.04ms] 551 ms
+     * Benchmark for AnalyserServiceTest is [270.79ms] 270 ms (with word fork cleaning)
+     * Benchmark for AnalyserServiceTest is [210.63ms] 210 ms (with no word fork cleaning)
+     */
+    @Test
+    public void benchmark() throws WordAnalyserException {
+        Service service = getService(Paths.get("src/test/resources/bible.txt"));
+
+        int benchmarkTest = 100;
+        List<Long> times = new ArrayList<>();
+
+        for (int i = 0; i < benchmarkTest; i++) {
+            long start = System.currentTimeMillis();
+            service.analyse();
+            times.add(System.currentTimeMillis() - start);
+        }
+
+        double total = times.stream().mapToDouble(Long::doubleValue).sum();
+        double average = total / benchmarkTest;
+        logger.info("Benchmark for " + getClass().getSimpleName() + " is [" + DECIMAL_FORMAT.format(average) + "ms] " +
+                    Utils.getTimeTakenString(((long) average)));
 
     }
 
