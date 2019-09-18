@@ -69,9 +69,6 @@ Read the provided file in and analyse contents at a word level
 
 The default configuration is to use the `StreamingAnalyserService` using `LINE_STREAMING`.
 This has been set from the following benchmark tests results.
-It should be noted the original AnalyserService without the word cleaning being forked is actually almost as fast as the Streaming version. 
-This is presumably because the use of `parallelStream` essentially does the same thing that the `ForkJoinTask` performs, therefore using the normal
-`stream` method is much slower than the parallelised AnalyserService. 
 
 | Class | Internal Settings | Benchmark |
 | ----- | ----------------- | :-------: | 
@@ -81,6 +78,17 @@ This is presumably because the use of `parallelStream` essentially does the same
 | StreamingAnalyserServiceTest | LINE_STREAMING w/stream | 589.81ms |
 | AnalyserServiceTest | with word fork cleaning | 270.79ms |
 | AnalyserServiceTest | without word fork cleaning | 210.63ms |
+
+It should be noted the original AnalyserService without the word cleaning being forked is actually almost as fast as the line streaming version.
+The difference between the 2 streaming methods is the way the file is loaded
+
+* STREAMING loads the file in one go and streams all the words
+* LINE_STREAMING using `Files.readAllLines` and then parallel streams the lines.
+ 
+The use of `parallelStream` and `readAllLines` essentially does the same thing that the `ForkJoinTask` performs however optimised for the Java 8
+ streams.
+However reading the whole file in one go will not benefit from parallelisation as once the text is split all the words are available.
+Using parallelism on each line allows the text to be split and cleaned much faster as the whole file can be processed by all the available cores.  
 
 ### Running as application
 
