@@ -205,3 +205,5 @@ local.properties
 reports
 .shelf
 ~$*.xls*
+
+target/
