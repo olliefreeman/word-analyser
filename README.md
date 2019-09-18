@@ -27,6 +27,8 @@ Alternatively you can use the Gradle wrapper to build the required project files
 > ./gradlew eclipse
 ``` 
 
+The project can also be imported using the included `pom.xml` file.
+
 All development should be done using [git-flow](https://nvie.com/posts/a-successful-git-branching-model/) and then submitted as a Pull Request to this repository.
 
 ## Testing
@@ -56,9 +58,29 @@ Read the provided file in and analyse contents at a word level
  -h,--help
  -j,--java                  Shorthand option for --language=java
  -l,--language <LANGUAGE>   Programming language to use for analysis. One of 'java' or 'groovy', default is 'java'.
+ -m,--full-multi            Use full multi threaded service. This will thread the word cleaning as well.Default option
+                            using Groovy
+ -p,--partial-multi         Use partial multi threaded service. This will not thread the word cleaning. Default option
+                            using Java, not available in Groovy
+ -s,--single                Use single threaded service
  -v,--version
 
 ```
+
+The default configuration is to use the `StreamingAnalyserService` using `LINE_STREAMING`.
+This has been set from the following benchmark tests results.
+It should be noted the original AnalyserService without the word cleaning being forked is actually almost as fast as the Streaming version. 
+This is presumably because the use of `parallelStream` essentially does the same thing that the `ForkJoinTask` performs, therefore using the normal
+`stream` method is much slower than the parallelised AnalyserService. 
+
+| Class | Internal Settings | Benchmark |
+| ----- | ----------------- | :-------: | 
+| StreamingAnalyserServiceTest | STREAMING w/parallelStream | 551.04ms |
+| StreamingAnalyserServiceTest | STREAMING w/stream | 690.43ms |
+| StreamingAnalyserServiceTest | LINE_STREAMING w/parallelStream | 184.38ms |
+| StreamingAnalyserServiceTest | LINE_STREAMING w/stream | 589.81ms |
+| AnalyserServiceTest | with word fork cleaning | 270.79ms |
+| AnalyserServiceTest | without word fork cleaning | 210.63ms |
 
 ### Running as application
 
