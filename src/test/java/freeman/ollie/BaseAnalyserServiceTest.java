@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNull;
  */
 public abstract class BaseAnalyserServiceTest {
 
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
-    private static final Logger logger = LoggerFactory.getLogger(BaseAnalyserServiceTest.class);
+    static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.###");
+    static final Logger logger = LoggerFactory.getLogger(BaseAnalyserServiceTest.class);
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -59,7 +59,10 @@ public abstract class BaseAnalyserServiceTest {
     }
 
     /*
-     * Benchmark for SingleThreadedAnalyserServiceTest is [551.04ms] 551 ms
+     * Benchmark for StreamingAnalyserServiceTest is [551.04ms] 551 ms (STREAMING w/parallelStream)
+     * Benchmark for StreamingAnalyserServiceTest is [690.43ms] 690 ms (STREAMING w/stream)
+     * Benchmark for StreamingAnalyserServiceTest is [184.38ms] 184 ms (LINE_STREAMING w/parallelStream)
+     * Benchmark for StreamingAnalyserServiceTest is [589.81ms] 589 ms (LINE_STREAMING w/stream)
      * Benchmark for AnalyserServiceTest is [270.79ms] 270 ms (with word fork cleaning)
      * Benchmark for AnalyserServiceTest is [210.63ms] 210 ms (with no word fork cleaning)
      */

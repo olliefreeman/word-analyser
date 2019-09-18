@@ -10,9 +10,9 @@ import java.nio.file.Path
  * @since 16/09/2019
  */
 @CompileStatic
-class GroovySingleThreadedAnalyserService extends GroovyAnalyserService {
+class GroovyStreamingAnalyserService extends GroovyAnalyserService {
 
-    GroovySingleThreadedAnalyserService(Path filePathToAnalyse) {
+    GroovyStreamingAnalyserService(Path filePathToAnalyse) {
         super(filePathToAnalyse)
     }
 

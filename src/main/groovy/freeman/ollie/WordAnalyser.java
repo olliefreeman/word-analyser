@@ -79,7 +79,7 @@ public class WordAnalyser {
                                 );
         threadingGroup.addOption(
             Option.builder("m").longOpt("full-multi")
-                .desc("Use full multi threaded service. This will thread the word cleaning as well." +
+                .desc("Use full multi threaded service. This will thread the word cleaning as well. " +
                       "Default option using Groovy").build()
                                 );
         threadingGroup.addOption(
@@ -105,11 +105,11 @@ public class WordAnalyser {
     private static Service getService(CommandLine line, Path path) {
         switch (getLanguage(line)) {
             case "groovy":
-                if(line.hasOption('s')) return new GroovySingleThreadedAnalyserService(path);
+                if (line.hasOption('s')) return new GroovyStreamingAnalyserService(path);
                 return new GroovyAnalyserService(path);
             case "java":
             default:
-                if(line.hasOption('s')) return new SingleThreadedAnalyserService(path);
+                if (line.hasOption('s')) return new StreamingAnalyserService(path);
                 if(line.hasOption('m')) return new AnalyserService(path,true);
                 return new AnalyserService(path, false);
         }

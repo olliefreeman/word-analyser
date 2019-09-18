@@ -112,7 +112,7 @@ public class AnalyserService implements Service {
         return results.values().stream().mapToLong(Long::longValue).sum();
     }
 
-    protected Map<Integer, Long> performAnalysis() throws IOException {
+    protected Map<Integer, Long> performAnalysis() throws IOException, WordAnalyserException {
         List<String> fileLines = Files.readAllLines(filePathToAnalyse);
         ForkJoinPool pool = ForkJoinPool.commonPool();
         logger.info("Running with parallelism: {}", pool.getParallelism());
