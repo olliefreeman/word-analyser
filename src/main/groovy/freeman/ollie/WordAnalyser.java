@@ -61,6 +61,7 @@ public class WordAnalyser {
         mainGroup.addOption(Option.builder("h").longOpt("help").build());
         mainGroup.addOption(Option.builder("v").longOpt("version").build());
         options.addOptionGroup(mainGroup);
+
         OptionGroup languageGroup = new OptionGroup();
         languageGroup.addOption(
             Option.builder("l").longOpt("language")
@@ -71,6 +72,23 @@ public class WordAnalyser {
         languageGroup.addOption(Option.builder("j").longOpt("java").desc("Shorthand option for --language=java").build());
         languageGroup.addOption(Option.builder("g").longOpt("groovy").desc("Shorthand option for --language=groovy").build());
         options.addOptionGroup(languageGroup);
+
+        OptionGroup threadingGroup = new OptionGroup();
+        threadingGroup.addOption(
+            Option.builder("s").longOpt("single").desc("Use single threaded service").build()
+                                );
+        threadingGroup.addOption(
+            Option.builder("m").longOpt("full-multi")
+                .desc("Use full multi threaded service. This will thread the word cleaning as well." +
+                      "Default option using Groovy").build()
+                                );
+        threadingGroup.addOption(
+            Option.builder("p").longOpt("partial-multi")
+                .desc("Use partial multi threaded service. This will not thread the word cleaning. " +
+                      "Default option using Java, not available in Groovy").build()
+                                );
+
+        options.addOptionGroup(threadingGroup);
         return options;
     }
 
@@ -87,10 +105,13 @@ public class WordAnalyser {
     private static Service getService(CommandLine line, Path path) {
         switch (getLanguage(line)) {
             case "groovy":
+                if(line.hasOption('s')) return new GroovySingleThreadedAnalyserService(path);
                 return new GroovyAnalyserService(path);
             case "java":
             default:
-                return new AnalyserService(path);
+                if(line.hasOption('s')) return new SingleThreadedAnalyserService(path);
+                if(line.hasOption('m')) return new AnalyserService(path,true);
+                return new AnalyserService(path, false);
         }
     }
 

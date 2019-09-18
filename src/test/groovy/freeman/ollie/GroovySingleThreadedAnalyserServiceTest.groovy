@@ -14,4 +14,9 @@ class GroovySingleThreadedAnalyserServiceTest extends BaseAnalyserServiceTest {
     Service getService(Path path) {
         new GroovySingleThreadedAnalyserService(path)
     }
+
+    @Override
+    int getBenchmarkTestCount(){
+        10
+    }
 }

@@ -58,6 +58,30 @@ public abstract class BaseAnalyserServiceTest {
 
     }
 
+    /*
+     * Benchmark for SingleThreadedAnalyserServiceTest is [551.04ms] 551 ms
+     * Benchmark for AnalyserServiceTest is [270.79ms] 270 ms (with word fork cleaning)
+     * Benchmark for AnalyserServiceTest is [210.63ms] 210 ms (with no word fork cleaning)
+     */
+    @Test
+    public void benchmark() throws WordAnalyserException {
+        Service service = getService(Paths.get("src/test/resources/bible.txt"));
+
+        List<Long> times = new ArrayList<>();
+
+        for (int i = 0; i < getBenchmarkTestCount(); i++) {
+            long start = System.currentTimeMillis();
+            service.analyse();
+            times.add(System.currentTimeMillis() - start);
+        }
+
+        double total = times.stream().mapToDouble(Long::doubleValue).sum();
+        double average = total / getBenchmarkTestCount();
+        logger.warn("Benchmark for " + getClass().getSimpleName() + " is [" + DECIMAL_FORMAT.format(average) + "ms] " +
+                    Utils.getTimeTakenString(((long) average)));
+
+    }
+
     @Test
     public void bibleAnalyseWordCount() throws Exception {
         Service service = getService(Paths.get("src/test/resources/bible.txt"));
@@ -210,29 +234,8 @@ public abstract class BaseAnalyserServiceTest {
 
     }
 
-    /*
-     * Benchmark for SingleThreadedAnalyserServiceTest is [551.04ms] 551 ms
-     * Benchmark for AnalyserServiceTest is [270.79ms] 270 ms (with word fork cleaning)
-     * Benchmark for AnalyserServiceTest is [210.63ms] 210 ms (with no word fork cleaning)
-     */
-    @Test
-    public void benchmark() throws WordAnalyserException {
-        Service service = getService(Paths.get("src/test/resources/bible.txt"));
-
-        int benchmarkTest = 100;
-        List<Long> times = new ArrayList<>();
-
-        for (int i = 0; i < benchmarkTest; i++) {
-            long start = System.currentTimeMillis();
-            service.analyse();
-            times.add(System.currentTimeMillis() - start);
-        }
-
-        double total = times.stream().mapToDouble(Long::doubleValue).sum();
-        double average = total / benchmarkTest;
-        logger.info("Benchmark for " + getClass().getSimpleName() + " is [" + DECIMAL_FORMAT.format(average) + "ms] " +
-                    Utils.getTimeTakenString(((long) average)));
-
+    int getBenchmarkTestCount(){
+        return 100;
     }
 
     abstract Service getService(Path path);
